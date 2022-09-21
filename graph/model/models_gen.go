@@ -2,33 +2,13 @@
 
 package model
 
-type Link struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Address string `json:"address"`
-	User    *User  `json:"user"`
+type Dog struct {
+	ID        string `json:"_id" bson:"_id"`
+	Name      string `json:"name"`
+	IsGoodBoy bool   `json:"isGoodBoy"`
 }
 
-type Login struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type NewLink struct {
-	Title   string `json:"title"`
-	Address string `json:"address"`
-}
-
-type NewUser struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type RefreshTokenInput struct {
-	Token string `json:"token"`
-}
-
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type NewDog struct {
+	Name      string `json:"name"`
+	IsGoodBoy bool   `json:"isGoodBoy"`
 }
