@@ -1,9 +1,14 @@
 # GraphQL schema example
-
 type Dog {
   _id: String!
   name: String!
   isGoodBoy: Boolean!
+}
+
+type User {
+  _id: String!
+  name: String!
+  dogs: [Dog!]!
 }
 
 input NewDog {
@@ -11,11 +16,19 @@ input NewDog {
   isGoodBoy: Boolean!
 }
 
+input NewUser {
+  name: String!
+  dogs: [NewDog]
+}
+
 type Query {
   dog(_id: String): Dog!
   dogs: [Dog!]!
+  user(_id: String): User!
+  users: [User!]!
 }
 
 type Mutation {
   createDog(input: NewDog): Dog!
+  createUser(input: NewUser): User!
 }

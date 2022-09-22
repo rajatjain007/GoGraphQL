@@ -29,8 +29,8 @@ func Connect() *DB{
 	}
 }
 
-func (db* DB) Save(input *model.NewDog) *model.Dog{
-	collection := db.client.Database("test").Collection("dogs")
+func (db* DB) SaveDog(input *model.NewDog) *model.Dog{
+	collection := db.client.Database("GoGraphQL").Collection("Dogs")
 	ctx,cancel := context.WithTimeout(context.Background(),30*time.Second)
 	defer cancel()
 	res,err := collection.InsertOne(ctx,input)
@@ -45,7 +45,7 @@ func (db* DB) Save(input *model.NewDog) *model.Dog{
 }
 
 func (db* DB) FindDogByID(ID string) *model.Dog{
-	collection := db.client.Database("test").Collection("dogs")
+	collection := db.client.Database("GoGraphQL").Collection("UserAndDogs")
 	ObjectID, err := primitive.ObjectIDFromHex(ID)
 	if(err!=nil){
 		log.Fatal(err)
@@ -60,7 +60,7 @@ func (db* DB) FindDogByID(ID string) *model.Dog{
 }
 
 func (db* DB) FindAllDogs() []*model.Dog{
-	collection := db.client.Database("test").Collection("dogs")
+	collection := db.client.Database("GoGraphQL").Collection("UserAndDogs")
 	ctx,cancel := context.WithTimeout(context.Background(),30*time.Second)
 	defer cancel()
 	cur,err := collection.Find(ctx,bson.D{})
@@ -77,4 +77,39 @@ func (db* DB) FindAllDogs() []*model.Dog{
 		dogs = append(dogs, dog)
 	}
 	return dogs
+}
+
+func (db* DB) SaveUser(input* model.NewUser) *model.User{
+	collection := db.client.Database("GoGraphQL").Collection("UserAndDogs")
+	ctx,cancel := context.WithTimeout(context.Background(),30*time.Second)
+	defer cancel()
+	res,err := collection.InsertOne(ctx,input)
+	if(err!=nil){
+		log.Fatal(err)
+	}
+	
+	return &model.User{
+		ID: res.InsertedID.(primitive.ObjectID).Hex(),
+		Name: input.Name,	
+	}
+}
+
+func (db* DB) FindAllUsers() []*model.User{
+	collection := db.client.Database("GoGraphQL").Collection("UserAndDogs")
+	ctx,cancel := context.WithTimeout(context.Background(),30*time.Second)
+	defer cancel()
+	cur,err := collection.Find(ctx,bson.D{})
+	if(err!=nil){
+		log.Fatal(err)
+	}
+	var users []*model.User
+	for cur.Next(ctx){
+		var user *model.User
+		err := cur.Decode(&user)
+		if(err!=nil){
+			log.Fatal(err)
+		}
+		users = append(users, user)
+	}
+	return users
 }
